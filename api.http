@@ -1,0 +1,20 @@
+http://127.0.0.1:8000/api/v1/hello
+
+###
+POST  https://api-free.deepl.com/v2/translate HTTP/2
+Authorization: DeepL-Auth-Key 3f853bf6-f42f-49f7-a16f-1fcae400f02d:fx 
+User-Agent: YourApp/1.2.3
+Content-Length: 45
+Content-Type: application/json
+
+{"text":["Hello, world!"], "source_lang":"EN", "target_lang":"RU"}
+
+
+###
+POST  http://127.0.0.1:8000/api/v1/translate HTTP/1.1
+
+{
+    "text": "Hello, how are you???",
+    "source_language": "EN",
+    "target_language": "RU"
+}
