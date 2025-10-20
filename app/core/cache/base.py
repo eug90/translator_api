@@ -46,7 +46,7 @@ class TranslationCache(ABC):
         """Clear all cached translations."""
         pass
 
-    def _make_key(
+    def make_key(
         self,
         text: str,
         source_language: str,
