@@ -1,3 +1,4 @@
+import hashlib
 from abc import ABC, abstractmethod
 
 
@@ -46,14 +47,14 @@ class TranslationCache(ABC):
         """Clear all cached translations."""
         pass
 
-    def make_key(
+    def _make_key(
         self,
         text: str,
         source_language: str,
         target_language: str,
     ) -> str:
         """
-        Generate a cache key from translation parameters.
+        Generate a cache key from translation parameters using SHA256 hash.
 
         Args:
             text: Text to translate
@@ -61,6 +62,7 @@ class TranslationCache(ABC):
             target_language: Target language code
 
         Returns:
-            Cache key
+            Hashed cache key (64 character hex string)
         """
-        return f"{source_language}:{target_language}:{text}"
+        key_str = f"{source_language}:{target_language}:{text}"
+        return hashlib.sha256(key_str.encode()).hexdigest()
