@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock
 import pytest
 
 from app.core.cache.memory import InMemoryTranslationCache
-from app.core.providers.base import Language
+from app.core.models import Language
 from app.core.service import TranslationService
 
 

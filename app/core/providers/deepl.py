@@ -1,7 +1,8 @@
 import asyncio
 import logging
 
-from app.core.providers.base import Language, TranslationProvider
+from app.core.models import Language
+from app.core.providers.base import TranslationProvider
 from app.core.translator import call_remote_api
 
 logger = logging.getLogger(__name__)

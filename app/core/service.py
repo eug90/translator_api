@@ -1,7 +1,8 @@
 import logging
 
 from app.core.cache.base import TranslationCache
-from app.core.providers.base import Language, TranslationProvider, TranslationResult
+from app.core.models import Language, TranslationResult
+from app.core.providers.base import TranslationProvider
 
 logger = logging.getLogger(__name__)
 
