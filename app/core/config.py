@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     # Logging
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
 
+    # Cache configuration
+    cache_type: str = Field(default="memory", alias="CACHE_TYPE")
+    redis_url: str = Field(default="redis://localhost:6379/0", alias="REDIS_URL")
+
     class Config:
         env_file = ".env"
         case_sensitive = False

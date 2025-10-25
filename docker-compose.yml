@@ -1,5 +1,22 @@
 
 services:
+  redis:
+    image: redis:7-alpine
+    container_name: translator-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - translator-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   translator-api:
     build:
       context: .
@@ -11,6 +28,8 @@ services:
       - API_DEBUG=false
       - LOG_LEVEL=INFO
       - ENVIRONMENT=docker
+      - REDIS_URL=redis://redis:6379/0
+      - CACHE_TYPE=redis
     env_file:
       - .env
     volumes:
@@ -19,6 +38,9 @@ services:
     command: uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload
     networks:
       - translator-network
+    depends_on:
+      redis:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/hello"]
       interval: 30s
@@ -26,6 +48,10 @@ services:
       retries: 3
       start_period: 40s
     restart: unless-stopped
+
+volumes:
+  redis-data:
+    driver: local
 
 networks:
   translator-network:

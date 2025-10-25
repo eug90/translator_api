@@ -1,10 +1,11 @@
 import pytest
+import pytest_asyncio
 
 from app.core.cache.memory import InMemoryTranslationCache
 
 
-@pytest.fixture
-def cache():
+@pytest_asyncio.fixture
+async def cache():
     """Create a fresh in-memory cache for each test."""
     return InMemoryTranslationCache()
 
@@ -48,7 +49,9 @@ async def test_cache_clear(cache):
 async def test_cache_make_key(cache):
     """Test cache key generation."""
     key = cache._make_key("hello", "EN", "ES")
-    assert key == "EN:ES:hello"
+    # Should be a 64-character SHA256 hex digest
+    assert isinstance(key, str)
+    assert len(key) == 64
 
     key2 = cache._make_key("hello", "EN", "ES")
     assert key == key2
