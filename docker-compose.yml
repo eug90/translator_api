@@ -1,0 +1,32 @@
+
+services:
+  translator-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: translator-api
+    ports:
+      - "8000:8000"
+    environment:
+      - API_DEBUG=false
+      - LOG_LEVEL=INFO
+      - ENVIRONMENT=docker
+    env_file:
+      - .env
+    volumes:
+      - ./app:/app/app
+      - ./tests:/app/tests
+    command: uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - translator-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/hello"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+networks:
+  translator-network:
+    driver: bridge
