@@ -19,20 +19,31 @@ class DeepLProvider(TranslationProvider):
     ]
 
     def __init__(
-        self, api_url: str, api_key: str, max_retries: int = 3, retry_delay: float = 1.0
+        self,
+        api_url: str,
+        api_key: str,
+        max_retries: int = 3,
+        initial_delay: float = 0.5,
+        exponential_base: float = 2.0,
+        max_delay: float = 30.0,
     ):
         """
         Initialize DeepL provider.
 
         Args:
+            api_url: DeepL API URL
             api_key: DeepL API key
-            max_retries: Maximum number of retries for failed requests
-            retry_delay: Delay between retries in seconds
+            max_retries: Maximum number of retries for failed requests (default: 3)
+            initial_delay: Initial delay in seconds (default: 0.5)
+            exponential_base: Base for exponential backoff (default: 2.0)
+            max_delay: Maximum delay cap in seconds (default: 30.0)
         """
         self.api_url = api_url
         self.api_key = api_key
         self.max_retries = max_retries
-        self.retry_delay = retry_delay
+        self.initial_delay = initial_delay
+        self.exponential_base = exponential_base
+        self.max_delay = max_delay
 
     async def translate(
         self,
@@ -126,6 +137,20 @@ class DeepLProvider(TranslationProvider):
             lang.code == language_code.upper() for lang in self.SUPPORTED_LANGUAGES
         )
 
+    def _calculate_backoff_delay(self, attempt: int) -> float:
+        """
+        Calculate exponential backoff delay with jitter and cap.
+
+        Args:
+            attempt: Retry attempt number (0-indexed)
+
+        Returns:
+            Delay in seconds (capped at max_delay)
+        """
+        delay = self.initial_delay * (self.exponential_base**attempt)
+        # Cap the delay at max_delay
+        return min(delay, self.max_delay)
+
     async def _translate_with_retry(
         self,
         text: str,
@@ -173,7 +198,11 @@ class DeepLProvider(TranslationProvider):
                 )
 
                 if attempt < self.max_retries - 1:
-                    await asyncio.sleep(self.retry_delay)
+                    delay = self._calculate_backoff_delay(attempt)
+                    logger.debug(
+                        f"Retrying in {delay:.2f}s (exponential backoff, attempt {attempt + 1})"
+                    )
+                    await asyncio.sleep(delay)
 
         raise Exception(
             f"Translation failed after {self.max_retries} retries"
