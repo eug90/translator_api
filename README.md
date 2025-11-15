@@ -1,4 +1,4 @@
-# Translation API - Production Ready
+# Translation API
 
 > A comprehensive translation service built with FastAPI, featuring DeepL provider, intelligent caching, automatic retries, and batch translation support.
 
