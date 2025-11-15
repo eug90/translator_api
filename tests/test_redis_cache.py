@@ -1,9 +1,10 @@
 import pytest
+import pytest_asyncio
 
 from app.core.cache.redis import RedisTranslationCache
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def redis_cache():
     """Create a fresh Redis cache for each test."""
     cache = RedisTranslationCache(redis_url="redis://localhost:6379/1")

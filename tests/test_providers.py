@@ -8,7 +8,7 @@ from app.core.providers.deepl import DeepLProvider
 @pytest.fixture
 def deepl_provider():
     """Create a DeepL provider instance for testing."""
-    return DeepLProvider(api_key="test-key")
+    return DeepLProvider(api_url="test.url", api_key="test-key")
 
 
 def test_is_language_supported(deepl_provider):

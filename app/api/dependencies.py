@@ -21,7 +21,7 @@ _provider = DeepLProvider(
 _service = TranslationService(provider=_provider, cache=_cache)
 
 
-async def get_translation_service() -> TranslationService:
+def get_translation_service() -> TranslationService:
     """
     Dependency for getting the translation service instance.
 
@@ -29,3 +29,5 @@ async def get_translation_service() -> TranslationService:
         TranslationService instance
     """
     return _service
+
+

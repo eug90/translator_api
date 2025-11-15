@@ -7,7 +7,7 @@ User-Agent: YourApp/1.2.3
 Content-Length: 45
 Content-Type: application/json
 
-{"text":["Hello, world!"], "source_lang":"EN", "target_lang":"RU"}
+{"text":["Hello, world!", "how are you?"], "source_lang":"EN", "target_lang":"RU"}
 
 
 ###
